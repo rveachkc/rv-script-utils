@@ -33,7 +33,7 @@ jobs:
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
-          name: junit-test-results
+          name: pytest-results
           path: test-results.xml
 
       - name: Run Ruff
@@ -42,5 +42,5 @@ jobs:
       - name: Upload ruff results
         uses: actions/upload-artifact@v4
         with:
-          name: junit-test-results
+          name: ruff-results
           path: ruff-results.xml

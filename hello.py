@@ -1,9 +1,3 @@
-# rv-script-utils
-
-Script utilities to add in structured logging and support for healthchecks.io.
-See example of use in hello.py and in the example below.
-
-```python
 from typing import Self
 
 from rv_script_lib import ScriptBase
@@ -44,4 +38,3 @@ if __name__ == "__main__":
 
     myscript = HelloWorld()
     myscript.run()
-```

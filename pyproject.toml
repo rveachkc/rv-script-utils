@@ -1,0 +1,36 @@
+[project]
+name = "rv-script-utils"
+description = "Utilities to help make scripts"
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32.3",
+    "structlog>=24.4.0",
+]
+license = {file = "LICENSE"}
+keywords = ["script", "logging", "healthchecks.io"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Homepage = "https://github.com/rveachkc/rv-script-utils"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.3.3",
+    "ruff>=0.7.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src/"
+]
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]

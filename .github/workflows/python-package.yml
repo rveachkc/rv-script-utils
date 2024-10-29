@@ -65,3 +65,9 @@ jobs:
 
     - name: Build dist
       run: uv build
+
+    - name: built artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-package-distributions
+        path: dist/

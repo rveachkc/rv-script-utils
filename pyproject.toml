@@ -22,10 +22,8 @@ Homepage = "https://github.com/rveachkc/rv-script-utils"
 
 [tool.uv]
 dev-dependencies = [
-    "build>=1.2.2.post1",
     "pytest>=8.3.3",
     "ruff>=0.7.1",
-    "twine>=5.1.1",
 ]
 
 [tool.pytest.ini_options]

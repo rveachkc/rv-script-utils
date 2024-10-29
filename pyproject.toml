@@ -14,3 +14,10 @@ dev-dependencies = [
     "pytest>=8.3.3",
     "ruff>=0.7.1",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = rv_script_lib
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]

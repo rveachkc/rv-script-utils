@@ -28,7 +28,20 @@ jobs:
 
       - name: Run tests
         # For example, using `pytest`
-        run: uv run pytest tests
+        run: uv run pytest tests --junit-xml=test-results.xml
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-test-results
+          path: test-results.xml
+
 
       - name: Run Ruff
-        run: uv ruff check .
+        run: uv run ruff check . --output-file ruff-results.xml --output-format junit
+
+      - name: Upload ruff results
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-test-results
+          path: ruff-results.xml

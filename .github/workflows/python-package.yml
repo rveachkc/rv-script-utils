@@ -42,3 +42,26 @@ jobs:
         with:
           name: ruff-results
           path: ruff-results.xml
+
+  build:
+
+    name: build distribution
+    runs-on: ubuntu-latest
+
+    needs:
+      - test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Set up Python
+      run: uv python install
+
+    - name: Install the project
+      run: uv sync --all-extras --dev
+
+    - name: Build dist
+      run: uv build

@@ -16,7 +16,7 @@ dev-dependencies = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = rv_script_lib
+pythonpath = "rv_script_lib"
 addopts = "-ra -q"
 testpaths = [
     "tests",

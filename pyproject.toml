@@ -23,6 +23,7 @@ Homepage = "https://github.com/rveachkc/rv-script-utils"
 [tool.uv]
 dev-dependencies = [
     "pytest>=8.3.3",
+    "requests-mock>=1.12.1",
     "ruff>=0.7.1",
 ]
 

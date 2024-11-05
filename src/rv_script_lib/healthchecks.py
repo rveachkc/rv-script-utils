@@ -33,6 +33,10 @@ class HealthCheckPinger:
         data: Optional[str] = None,
     ) -> bool:
 
+        if not self.uuid:
+            self.log.debug("Healthcheck uuid not set, skipping")
+            return
+
         url = urlunparse(
             (
                 self.healthcheck_protocol,

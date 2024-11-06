@@ -1,5 +1,16 @@
 from typing import Self
 
+import os
+import sys
+
+sys.path.append(
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "src",
+    )
+)
+
+
 from rv_script_lib import ScriptBase
 
 
@@ -20,7 +31,7 @@ class HelloWorld(ScriptBase):
             help="What do you want to say?",
         )
 
-    def run(self: Self):
+    def runJob(self: Self):
 
         self.log.info("Hello from rv-script-utils!")
 

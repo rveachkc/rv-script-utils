@@ -2,8 +2,8 @@ import logging
 import os
 import sys
 
-from typing import Optional, Literal, Union
-
+from typing import Optional, Union
+from rv_script_lib.lib_types import LogFormatChoice
 import structlog
 
 DEFAULT_LOG_FORMAT = "dev"
@@ -55,7 +55,7 @@ def get_loglevel_from_arg(loglevel_argument: Union[int, bool, None]) -> int:
 
 
 def get_custom_logger(
-    log_format: Optional[Literal["logfmt", "json", "dev"]] = DEFAULT_LOG_FORMAT,
+    log_format: Optional[LogFormatChoice] = DEFAULT_LOG_FORMAT,
     force_configure: Optional[bool] = False,
     loglevel_argument: Union[int, bool] = logging.INFO,
     log_initialization: Optional[bool] = False,
@@ -71,7 +71,7 @@ def get_custom_logger(
     ):
 
         configure_kwargs = TIMESTAMPER_KWARGS.get(
-            log_format, LOGLEVEL_FORMATTERS[DEFAULT_LOG_FORMAT]
+            log_format, TIMESTAMPER_KWARGS[DEFAULT_LOG_FORMAT]
         )
 
         structlog.configure(

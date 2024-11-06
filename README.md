@@ -26,7 +26,7 @@ class HelloWorld(ScriptBase):
             help="What do you want to say?",
         )
 
-    def run(self: Self):
+    def runJob(self: Self):
 
         self.log.info("Hello from rv-script-utils!")
 

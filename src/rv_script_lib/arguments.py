@@ -1,6 +1,8 @@
 import argparse
+import os
 
-from typing import Literal, Optional
+from typing import Optional
+from rv_script_lib.lib_types import VerbosityConfigChoice
 
 from rv_script_lib.logging import (
     LOGLEVEL_FORMATTERS,
@@ -14,7 +16,7 @@ from rv_script_lib.healthchecks import (
 
 
 def get_custom_parser(
-    verbosity_config: Optional[Literal["bool", "count"]] = "bool",
+    verbosity_config: Optional[VerbosityConfigChoice] = "bool",
     allow_format_choice: Optional[bool] = True,
     argparse_kwargs: Optional[dict] = {},
     include_healthchecks: Optional[bool] = True,
@@ -62,7 +64,7 @@ def get_custom_parser(
             "--healthcheck-protocol",
             dest="healthcheck_protocol",
             type=str,
-            default=HEALTHCHECK_DEFAULT_PROTOCOL,
+            default=os.getenv("HEALTHCHECK_PROTOCOL", HEALTHCHECK_DEFAULT_PROTOCOL),
             help=argparse.SUPPRESS,
         )
 
@@ -70,15 +72,15 @@ def get_custom_parser(
             "--healthcheck-host",
             dest="healthcheck_host",
             type=str,
-            default=HEALTHCHECK_DEFAULT_HOSTNAME,
-            help=f"Healthcheck Hostname: Default {HEALTHCHECK_DEFAULT_HOSTNAME}",
+            default=os.getenv("HEALTHCHECK_HOSTNAME", HEALTHCHECK_DEFAULT_HOSTNAME),
+            help=f"Healthcheck Hostname. Set with env var HEALTHCHECK_HOSTNAME: Default {HEALTHCHECK_DEFAULT_HOSTNAME}",
         )
         hc_group.add_argument(
             "--healthcheck-uuid",
             dest="healthcheck_uuid",
             type=str,
-            default="",
-            help="Healthcheck UUID",
+            default=os.getenv("HEALTHCHECK_UUID", ""),
+            help="Healthcheck UUID, set with env var HEALTHCHECK_UUID",
         )
 
     return parser

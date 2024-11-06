@@ -7,15 +7,16 @@ from rv_script_lib.healthchecks import HealthCheckPinger
 class ScriptBase:
 
     PARSER_VERBOSITY_CONFIG = "bool"
-    PARSER_ALLOW_FORMAT_CHOICE = True
+    FORCE_LOG_FORMAT = ""
     PARSER_INCLUDE_HEALTHCHECKS = True
     PARSER_ARGPARSE_KWARGS = {}
+    LOG_INITIALIZATION = True
 
     def __init__(self: Self) -> Self:
 
         self.parser = get_custom_parser(
             verbosity_config=self.PARSER_VERBOSITY_CONFIG,
-            allow_format_choice=self.PARSER_ALLOW_FORMAT_CHOICE,
+            allow_format_choice=not bool(self.FORCE_LOG_FORMAT),
             argparse_kwargs=self.PARSER_ARGPARSE_KWARGS,
             include_healthchecks=self.PARSER_INCLUDE_HEALTHCHECKS,
         )
@@ -24,13 +25,22 @@ class ScriptBase:
 
         self.args = self.parser.parse_args()
 
-        self.log = get_logger_from_args(self.args)
-
-        self.healthcheck = HealthCheckPinger(
-            uuid=self.args.healthcheck_uuid,
-            healthcheck_protocol=self.args.healthcheck_protocol,
-            healtheck_host=self.args.healthcheck_host,
+        self.log = get_logger_from_args(
+            args=self.args,
+            log_initialization=self.LOG_INITIALIZATION,
+            force_log_format=self.FORCE_LOG_FORMAT,
         )
+
+        try:
+            self.healthcheck = HealthCheckPinger(
+                uuid=self.args.healthcheck_uuid,
+                healthcheck_protocol=self.args.healthcheck_protocol,
+                healtheck_host=self.args.healthcheck_host,
+            )
+        except AttributeError:
+            self.healthcheck = HealthCheckPinger(
+                uuid="",
+            )
 
     def extraArgs(self: Self):
         # override this to add additional arguments

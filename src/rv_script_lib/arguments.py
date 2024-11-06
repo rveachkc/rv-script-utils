@@ -1,7 +1,8 @@
 import argparse
 import os
 
-from typing import Literal, Optional
+from typing import Optional
+from rv_script_lib.lib_types import VerbosityConfigChoice
 
 from rv_script_lib.logging import (
     LOGLEVEL_FORMATTERS,
@@ -15,7 +16,7 @@ from rv_script_lib.healthchecks import (
 
 
 def get_custom_parser(
-    verbosity_config: Optional[Literal["bool", "count"]] = "bool",
+    verbosity_config: Optional[VerbosityConfigChoice] = "bool",
     allow_format_choice: Optional[bool] = True,
     argparse_kwargs: Optional[dict] = {},
     include_healthchecks: Optional[bool] = True,

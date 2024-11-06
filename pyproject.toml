@@ -1,3 +1,8 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+
 [project]
 name = "rv-script-utils"
 description = "Utilities to help make scripts"
@@ -35,3 +40,5 @@ addopts = "-ra -q"
 testpaths = [
     "tests",
 ]
+
+[tool.setuptools_scm]

@@ -42,4 +42,4 @@ testpaths = [
 ]
 
 [tool.setuptools_scm]
-write_to = "src/rv_script_lib/_version.py"
+version_file = "src/rv_script_lib/_version.py"

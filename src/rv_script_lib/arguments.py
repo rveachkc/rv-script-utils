@@ -101,6 +101,15 @@ def get_custom_parser(
         help="repeat max count" if include_repeat_group else argparse.SUPPRESS,
     )
 
+    prom_group = parser.add_argument_group("Prometheus Options")
+    prom_group.add_argument(
+        "--prom-textfile",
+        dest="prom_textfile",
+        type=str,
+        default="",
+        help="Path to where a prometheus textfile should be written",
+    )
+
     return parser
 
 

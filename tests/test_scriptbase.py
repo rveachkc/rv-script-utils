@@ -1,8 +1,12 @@
 import datetime
-from unittest import TestCase, mock
-from typing import Self
+import os
 import pprint
+
 from collections import Counter
+from tempfile import TemporaryDirectory
+from typing import Self
+from unittest import TestCase, mock
+
 import structlog
 from structlog.testing import capture_logs
 
@@ -290,3 +294,40 @@ class TestScriptBase(TestCase):
 
         self.assertIsInstance(my_job.repeat_interval, datetime.timedelta)
         self.assertEqual(my_job.repeat_interval.total_seconds(), 3600)
+
+class TestScriptBaseTextfiles(TestCase):
+
+    def setUp(self: Self):
+        structlog.reset_defaults()
+        self.assertFalse(structlog.is_configured())
+
+        self.temp_dir = TemporaryDirectory()
+        self.prom_textfile = os.path.join(self.temp_dir.name, "test.prom")
+
+        self.assertFalse(os.path.isfile(self.prom_textfile))
+
+    @mock.patch("sys.argv", ["script_name"])
+    def test_no_arg(self: Self):
+        class MyScript(ScriptBase):
+            def runJob(self: Self):
+                pass
+
+        my_job = MyScript()
+        my_job.run()
+
+        self.assertFalse(os.path.isfile(self.prom_textfile))
+
+
+    def test_write_textfile(self: Self):
+
+        class MyScript(ScriptBase):
+            def runJob(self: Self):
+                pass
+
+        # the decorator can't reference the class attribute
+        with mock.patch("sys.argv", ["script_name", "--prom-textfile", self.prom_textfile]):
+
+            my_job = MyScript()
+            my_job.run()
+
+        self.assertTrue(os.path.isfile(self.prom_textfile))

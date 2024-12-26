@@ -2,6 +2,7 @@ from typing import Self
 
 import os
 import sys
+from prometheus_client import Counter
 
 sys.path.append(
     os.path.join(
@@ -13,7 +14,6 @@ sys.path.append(
 
 from rv_script_lib import ScriptBase
 
-
 class HelloWorld(ScriptBase):
 
     PARSER_ARGPARSE_KWARGS = {
@@ -21,6 +21,7 @@ class HelloWorld(ScriptBase):
     }
 
     PARSER_INCLUDE_REPEAT_OPTIONS = False
+    PROM_METRIC_PREFIX = "hello"
 
     def extraArgs(self: Self):
 
@@ -31,6 +32,14 @@ class HelloWorld(ScriptBase):
             dest="message",
             default="you forgot to add a message with -m/--message",
             help="What do you want to say?",
+        )
+
+    def extraMetrics(self: Self):
+
+        self.hello_count = Counter(
+            f"{self.PROM_METRIC_PREFIX}_said_hello_count",
+            "just a simple counter",
+            registry=self.prom_registry,
         )
 
     def runJob(self: Self):
@@ -45,6 +54,7 @@ class HelloWorld(ScriptBase):
         self.log.warning("Warning, just for fun")
 
         self.log.info(self.args.message)
+        self.hello_count.inc()
 
 
 if __name__ == "__main__":

@@ -5,9 +5,10 @@ from typing import Self
 
 from pytimeparse import parse as timeparse
 
+from prometheus_client import CollectorRegistry, Counter, Gauge, write_to_textfile
+
 from rv_script_lib.arguments import get_custom_parser, get_logger_from_args
 from rv_script_lib.healthchecks import HealthCheckPinger
-
 
 class ScriptBase:
 
@@ -17,6 +18,7 @@ class ScriptBase:
     PARSER_ARGPARSE_KWARGS = {}
     PARSER_INCLUDE_REPEAT_OPTIONS = False
     LOG_INITIALIZATION = True
+    PROM_METRIC_PREFIX = "scriptbase"
 
     def __init__(self: Self) -> Self:
 
@@ -38,9 +40,25 @@ class ScriptBase:
             force_log_format=self.FORCE_LOG_FORMAT,
         )
 
+        self.prom_registry = CollectorRegistry()
+
+        self.prom_success = Gauge(
+            f"{self.PROM_METRIC_PREFIX}_success",
+            "1 if successful, 0 if not",
+            registry=self.prom_registry,
+        )
+
         if self.args.repeat_interval:
             self.repeat_interval = datetime.timedelta(seconds=timeparse(self.args.repeat_interval))
             self.log.info("interval set", interval=str(self.repeat_interval))
+            self.prom_repeat_count = Counter(
+                f"{self.PROM_METRIC_PREFIX}_repeat_count",
+                "Number of times a script has been run",
+                ["status"],
+                registry=self.prom_registry,
+            )
+
+        self.extraMetrics()
 
         try:
             self.healthcheck = HealthCheckPinger(
@@ -59,6 +77,12 @@ class ScriptBase:
         # self.parser.add_argument(...)
         pass
 
+    def extraMetrics(self: Self):
+        # override this to add additional prometheus metrics
+        # self.new_metric = Counter("name", "help", ["labels"], registry=self.prom_registry)
+        pass
+
+
     def runJob(self: Self):
         # override this to define the job that should be done
 
@@ -70,13 +94,25 @@ class ScriptBase:
         """
         self.healthcheck.start()
 
+        if self.args.repeat_interval:
+            self.prom_repeat_count.labels("total").inc()
+
         try:
             self.runJob()
 
         except Exception as e:
             self.log.exception(e)
+
+            self.prom_success.set(0)
+            if self.args.repeat_interval:
+                self.prom_repeat_count.labels("fail").inc()
+
             self.healthcheck.fail()
             raise
+
+        self.prom_success.set(1)
+        if self.args.repeat_interval:
+            self.prom_repeat_count.labels("success").inc()
 
         self.healthcheck.success()
 
@@ -107,3 +143,7 @@ class ScriptBase:
 
         else:
             self.__run_job_runner()
+
+        if self.args.prom_textfile:
+            self.log.debug("Writing Prometheus textfile", path=self.args.prom_textfile)
+            write_to_textfile(self.args.prom_textfile, self.prom_registry)

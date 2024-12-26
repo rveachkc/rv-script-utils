@@ -20,6 +20,7 @@ def get_custom_parser(
     allow_format_choice: Optional[bool] = True,
     argparse_kwargs: Optional[dict] = {},
     include_healthchecks: Optional[bool] = True,
+    include_repeat_group: Optional[bool] = False,
 ) -> argparse.ArgumentParser:
 
     parser = argparse.ArgumentParser(**argparse_kwargs)
@@ -82,6 +83,23 @@ def get_custom_parser(
             default=os.getenv("HEALTHCHECK_UUID", ""),
             help="Healthcheck UUID, set with env var HEALTHCHECK_UUID",
         )
+
+
+    repeat_group = parser.add_argument_group("Repeat Groups")
+    repeat_group.add_argument(
+        "--repeat-interval",
+        dest="repeat_interval",
+        type=str,
+        default="",
+        help="Repeat interval (1h, 1d, 1m30s, etc)" if include_repeat_group else argparse.SUPPRESS,
+    )
+    repeat_group.add_argument(
+        "--repeat-max",
+        dest="repeat_max",
+        type=int,
+        default=-1,
+        help="repeat max count" if include_repeat_group else argparse.SUPPRESS,
+    )
 
     return parser
 

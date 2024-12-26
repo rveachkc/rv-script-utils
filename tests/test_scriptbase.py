@@ -1,3 +1,4 @@
+import datetime
 from unittest import TestCase, mock
 from typing import Self
 import pprint
@@ -242,3 +243,50 @@ class TestScriptBase(TestCase):
 
         self.assertIsInstance(my_job.args.log_verbosity, int)
         self.assertEqual(my_job.args.log_verbosity, 2)
+
+    @mock.patch("sys.argv", ["script_name"])
+    def test_repeat_none(self: Self):
+
+        class MyScript(ScriptBase):
+
+            RUN_COUNT = 0
+
+            def runJob(self: Self):
+
+                self.RUN_COUNT += 1
+
+        my_job = MyScript()
+        my_job.run()
+
+        self.assertEqual(my_job.RUN_COUNT, 1)
+
+
+
+    @mock.patch("sys.argv", ["script_name", "--repeat-interval", "0s", "--repeat-max", "5"])
+    def test_repeat_five(self: Self):
+        class MyScript(ScriptBase):
+
+            RUN_COUNT = 0
+
+            def runJob(self: Self):
+
+                self.RUN_COUNT += 1
+
+        my_job = MyScript()
+        my_job.run()
+
+        self.assertEqual(my_job.RUN_COUNT, 5)
+
+        self.assertIsInstance(my_job.repeat_interval, datetime.timedelta)
+
+    @mock.patch("sys.argv", ["script_name", "--repeat-interval", "1h"])
+    def test_repeat_parser(self: Self):
+        class MyScript(ScriptBase):
+
+            def runJob(self: Self):
+                pass
+
+        my_job = MyScript()
+
+        self.assertIsInstance(my_job.repeat_interval, datetime.timedelta)
+        self.assertEqual(my_job.repeat_interval.total_seconds(), 3600)

@@ -20,6 +20,8 @@ class HelloWorld(ScriptBase):
         "description": "Hello World",
     }
 
+    PARSER_INCLUDE_REPEAT_OPTIONS = False
+
     def extraArgs(self: Self):
 
         self.parser.add_argument(

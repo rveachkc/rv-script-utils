@@ -10,6 +10,7 @@ from prometheus_client import CollectorRegistry, Counter, Gauge, write_to_textfi
 from rv_script_lib.arguments import get_custom_parser, get_logger_from_args
 from rv_script_lib.healthchecks import HealthCheckPinger
 
+
 class ScriptBase:
 
     PARSER_VERBOSITY_CONFIG = "bool"
@@ -49,7 +50,9 @@ class ScriptBase:
         )
 
         if self.args.repeat_interval:
-            self.repeat_interval = datetime.timedelta(seconds=timeparse(self.args.repeat_interval))
+            self.repeat_interval = datetime.timedelta(
+                seconds=timeparse(self.args.repeat_interval)
+            )
             self.log.info("interval set", interval=str(self.repeat_interval))
             self.prom_repeat_count = Counter(
                 f"{self.PROM_METRIC_PREFIX}_repeat_count",
@@ -82,7 +85,6 @@ class ScriptBase:
         # self.new_metric = Counter("name", "help", ["labels"], registry=self.prom_registry)
         pass
 
-
     def runJob(self: Self):
         # override this to define the job that should be done
 
@@ -114,8 +116,11 @@ class ScriptBase:
         if self.args.repeat_interval:
             self.prom_repeat_count.labels("success").inc()
 
-        self.healthcheck.success()
+        if self.args.prom_textfile:
+            self.log.debug("Writing Prometheus textfile", path=self.args.prom_textfile)
+            write_to_textfile(self.args.prom_textfile, self.prom_registry)
 
+        self.healthcheck.success()
 
     def run(self: Self):
         """
@@ -143,7 +148,3 @@ class ScriptBase:
 
         else:
             self.__run_job_runner()
-
-        if self.args.prom_textfile:
-            self.log.debug("Writing Prometheus textfile", path=self.args.prom_textfile)
-            write_to_textfile(self.args.prom_textfile, self.prom_registry)

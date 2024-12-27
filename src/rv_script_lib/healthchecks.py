@@ -1,16 +1,15 @@
 from typing import Literal, Optional, Self
+from urllib.parse import urlunparse
 
 import requests
-from urllib.parse import urlunparse
-from rv_script_lib.logging import custom_logger_proxy
 
+from rv_script_lib.logging import custom_logger_proxy
 
 HEALTHCHECK_DEFAULT_PROTOCOL = "https"
 HEALTHCHECK_DEFAULT_HOSTNAME = "hc-ping.com"
 
 
 class HealthCheckPinger:
-
     def __init__(
         self: Self,
         uuid: str,
@@ -19,7 +18,6 @@ class HealthCheckPinger:
         ] = HEALTHCHECK_DEFAULT_PROTOCOL,
         healtheck_host: Optional[str] = "hc-ping.com",
     ) -> Self:
-
         self.log = custom_logger_proxy()
         self.uuid = uuid
         self.healthcheck_protocol = healthcheck_protocol
@@ -32,7 +30,6 @@ class HealthCheckPinger:
         params: Optional[dict] = None,
         data: Optional[str] = None,
     ) -> bool:
-
         if not self.uuid:
             self.log.debug("Healthcheck uuid not set, skipping")
             return
@@ -72,11 +69,9 @@ class HealthCheckPinger:
 
     @staticmethod
     def __get_optional_params(**hc_kwargs) -> dict:
-
         return {key: value for key, value in hc_kwargs.items() if bool(value)}
 
     def success(self: Self, rid: Optional[str] = ""):
-
         self.__call_hc_api(
             endpoint_path=f"/{self.uuid}",
             endpoint_name="success",
@@ -84,7 +79,6 @@ class HealthCheckPinger:
         )
 
     def start(self: Self, rid: Optional[str] = ""):
-
         self.__call_hc_api(
             endpoint_path=f"/{self.uuid}/start",
             endpoint_name="start",
@@ -92,7 +86,6 @@ class HealthCheckPinger:
         )
 
     def fail(self: Self, rid: Optional[str] = ""):
-
         self.__call_hc_api(
             endpoint_path=f"/{self.uuid}/fail",
             endpoint_name="fail",
@@ -100,7 +93,6 @@ class HealthCheckPinger:
         )
 
     def log(self: Self, log_event: str, rid: Optional[str] = ""):
-
         self.__call_hc_api(
             endpoint_path=f"/{self.uuid}/log",
             endpoint_name="log",
@@ -109,7 +101,6 @@ class HealthCheckPinger:
         )
 
     def exit_status(self: Self, exit_status: int, rid: Optional[str] = ""):
-
         if not isinstance(exit_status, int):
             self.log.error(
                 "Aborting", reason="exit status is not integer", exit_status=exit_status

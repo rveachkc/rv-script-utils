@@ -1,7 +1,7 @@
-from typing import Self
-
 import os
 import sys
+from typing import Self
+
 from prometheus_client import Counter
 
 sys.path.append(
@@ -14,8 +14,8 @@ sys.path.append(
 
 from rv_script_lib import ScriptBase
 
-class HelloWorld(ScriptBase):
 
+class HelloWorld(ScriptBase):
     PARSER_ARGPARSE_KWARGS = {
         "description": "Hello World",
     }
@@ -24,7 +24,6 @@ class HelloWorld(ScriptBase):
     PROM_METRIC_PREFIX = "hello"
 
     def extraArgs(self: Self):
-
         self.parser.add_argument(
             "-m",
             "--message",
@@ -35,7 +34,6 @@ class HelloWorld(ScriptBase):
         )
 
     def extraMetrics(self: Self):
-
         self.hello_count = Counter(
             f"{self.PROM_METRIC_PREFIX}_said_hello_count",
             "just a simple counter",
@@ -43,7 +41,6 @@ class HelloWorld(ScriptBase):
         )
 
     def runJob(self: Self):
-
         self.log.info("Hello from rv-script-utils!")
 
         try:
@@ -58,6 +55,5 @@ class HelloWorld(ScriptBase):
 
 
 if __name__ == "__main__":
-
     myscript = HelloWorld()
     myscript.run()

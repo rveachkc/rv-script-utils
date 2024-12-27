@@ -3,16 +3,14 @@ from itertools import count
 from time import sleep
 from typing import Self
 
-from pytimeparse import parse as timeparse
-
 from prometheus_client import CollectorRegistry, Counter, Gauge, write_to_textfile
+from pytimeparse import parse as timeparse
 
 from rv_script_lib.arguments import get_custom_parser, get_logger_from_args
 from rv_script_lib.healthchecks import HealthCheckPinger
 
 
 class ScriptBase:
-
     PARSER_VERBOSITY_CONFIG = "bool"
     FORCE_LOG_FORMAT = ""
     PARSER_INCLUDE_HEALTHCHECKS = True
@@ -22,7 +20,6 @@ class ScriptBase:
     PROM_METRIC_PREFIX = "scriptbase"
 
     def __init__(self: Self) -> Self:
-
         self.parser = get_custom_parser(
             verbosity_config=self.PARSER_VERBOSITY_CONFIG,
             allow_format_choice=not bool(self.FORCE_LOG_FORMAT),
@@ -133,14 +130,12 @@ class ScriptBase:
                 self.args.repeat_max > 0,
             ]
         ):
-
             for i in range(1, (self.args.repeat_max + 1)):
                 self.log.debug("repeat loop", i=i, max=self.args.repeat_max)
                 self.__run_job_runner()
                 sleep(self.repeat_interval.total_seconds())
 
         elif bool(self.args.repeat_interval):
-
             for i in count(start=1, step=1):
                 self.log.debug("repeat loop", i=i, max=self.args.repeat_max)
                 self.__run_job_runner()

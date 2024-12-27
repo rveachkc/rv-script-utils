@@ -1,7 +1,6 @@
 import datetime
 import os
 import pprint
-
 from collections import Counter
 from tempfile import TemporaryDirectory
 from typing import Self
@@ -14,14 +13,12 @@ from rv_script_lib import ScriptBase
 
 
 class TestScriptBase(TestCase):
-
     def setUp(self: Self):
         structlog.reset_defaults()
         self.assertFalse(structlog.is_configured())
 
     @staticmethod
     def count_loglevels(cap_logs: list) -> dict:
-
         log_levels = map(
             lambda x: x.get("log_level"),
             cap_logs,
@@ -40,7 +37,6 @@ class TestScriptBase(TestCase):
         job = ScriptBase()
 
         with capture_logs() as cap_logs:
-
             with self.assertRaises(NotImplementedError):
                 job.run()
 
@@ -52,11 +48,8 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name", "-vv"])
     def test_basic_use(self: Self):
-
         class MyScript(ScriptBase):
-
             def runJob(self: Self):
-
                 self.log.warning("hello")
 
         with capture_logs() as cap_logs:
@@ -90,17 +83,13 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name", "-vv", "--extra-arg", "penguin"])
     def test_extra_args(self: Self):
-
         class MyScript(ScriptBase):
-
             def extraArgs(self: Self):
-
                 self.parser.add_argument(
                     "-x", "--extra-arg", type=str, dest="extra_arg"
                 )
 
             def runJob(self: Self):
-
                 self.found_extra_arg = self.args.extra_arg
 
         my_job = MyScript()
@@ -113,11 +102,8 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name", "-v", "--log-format", "logfmt"])
     def test_logfmt(self: Self):
-
         class MyScript(ScriptBase):
-
             def runJob(self: Self):
-
                 pass
 
         my_job = MyScript()
@@ -126,11 +112,8 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name", "-vv", "--log-format", "json"])
     def test_json(self: Self):
-
         class MyScript(ScriptBase):
-
             def runJob(self: Self):
-
                 pass
 
         my_job = MyScript()
@@ -139,11 +122,8 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name", "-vv", "--log-format", "dev"])
     def test_dev(self: Self):
-
         class MyScript(ScriptBase):
-
             def runJob(self: Self):
-
                 pass
 
         my_job = MyScript()
@@ -152,13 +132,10 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name", "-vv"])
     def test_force_format(self: Self):
-
         class MyScript(ScriptBase):
-
             FORCE_LOG_FORMAT = "json"
 
             def runJob(self: Self):
-
                 pass
 
         my_job = MyScript()
@@ -176,13 +153,10 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name", "-vv"])
     def test_disable_healthchecks(self: Self):
-
         class MyScript(ScriptBase):
-
             PARSER_INCLUDE_HEALTHCHECKS = False
 
             def runJob(self: Self):
-
                 pass
 
         my_job = MyScript()
@@ -202,13 +176,10 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name"])
     def test_count_loglevel(self: Self):
-
         class MyScript(ScriptBase):
-
             PARSER_VERBOSITY_CONFIG = "count"
 
             def runJob(self: Self):
-
                 pass
 
         my_job = MyScript()
@@ -218,13 +189,10 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name", "-v"])
     def test_count_loglevel_v(self: Self):
-
         class MyScript(ScriptBase):
-
             PARSER_VERBOSITY_CONFIG = "count"
 
             def runJob(self: Self):
-
                 pass
 
         my_job = MyScript()
@@ -234,13 +202,10 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name", "-vv"])
     def test_count_loglevel_vv(self: Self):
-
         class MyScript(ScriptBase):
-
             PARSER_VERBOSITY_CONFIG = "count"
 
             def runJob(self: Self):
-
                 pass
 
         my_job = MyScript()
@@ -250,13 +215,10 @@ class TestScriptBase(TestCase):
 
     @mock.patch("sys.argv", ["script_name"])
     def test_repeat_none(self: Self):
-
         class MyScript(ScriptBase):
-
             RUN_COUNT = 0
 
             def runJob(self: Self):
-
                 self.RUN_COUNT += 1
 
         my_job = MyScript()
@@ -264,16 +226,14 @@ class TestScriptBase(TestCase):
 
         self.assertEqual(my_job.RUN_COUNT, 1)
 
-
-
-    @mock.patch("sys.argv", ["script_name", "--repeat-interval", "0s", "--repeat-max", "5"])
+    @mock.patch(
+        "sys.argv", ["script_name", "--repeat-interval", "0s", "--repeat-max", "5"]
+    )
     def test_repeat_five(self: Self):
         class MyScript(ScriptBase):
-
             RUN_COUNT = 0
 
             def runJob(self: Self):
-
                 self.RUN_COUNT += 1
 
         my_job = MyScript()
@@ -286,7 +246,6 @@ class TestScriptBase(TestCase):
     @mock.patch("sys.argv", ["script_name", "--repeat-interval", "1h"])
     def test_repeat_parser(self: Self):
         class MyScript(ScriptBase):
-
             def runJob(self: Self):
                 pass
 
@@ -295,8 +254,8 @@ class TestScriptBase(TestCase):
         self.assertIsInstance(my_job.repeat_interval, datetime.timedelta)
         self.assertEqual(my_job.repeat_interval.total_seconds(), 3600)
 
-class TestScriptBaseTextfiles(TestCase):
 
+class TestScriptBaseTextfiles(TestCase):
     def setUp(self: Self):
         structlog.reset_defaults()
         self.assertFalse(structlog.is_configured())
@@ -317,16 +276,15 @@ class TestScriptBaseTextfiles(TestCase):
 
         self.assertFalse(os.path.isfile(self.prom_textfile))
 
-
     def test_write_textfile(self: Self):
-
         class MyScript(ScriptBase):
             def runJob(self: Self):
                 pass
 
         # the decorator can't reference the class attribute
-        with mock.patch("sys.argv", ["script_name", "--prom-textfile", self.prom_textfile]):
-
+        with mock.patch(
+            "sys.argv", ["script_name", "--prom-textfile", self.prom_textfile]
+        ):
             my_job = MyScript()
             my_job.run()
 

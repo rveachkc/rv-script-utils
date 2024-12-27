@@ -1,7 +1,7 @@
 import argparse
-from unittest import TestCase
-from typing import Self
 from collections import Counter
+from typing import Self
+from unittest import TestCase
 
 import structlog
 from structlog.testing import capture_logs
@@ -10,7 +10,6 @@ from rv_script_lib.arguments import get_custom_parser, get_logger_from_args
 
 
 class TestArguments(TestCase):
-
     def setUp(self: Self):
         structlog.reset_defaults()
         self.assertFalse(structlog.is_configured())
@@ -41,7 +40,6 @@ class TestArguments(TestCase):
         return cap_logs, counts
 
     def test_defaults(self: Self):
-
         # get parser with default values
         parser = get_custom_parser()
 
@@ -68,7 +66,6 @@ class TestArguments(TestCase):
         self.assertEqual(log_counts.get("critical", 0), 1)
 
     def test_defaults_verbose(self: Self):
-
         # get parser with default values
         parser = get_custom_parser()
 
@@ -91,7 +88,6 @@ class TestArguments(TestCase):
         self.assertEqual(log_counts.get("critical", 0), 1)
 
     def test_bool_defaults(self: Self):
-
         # get parser with default values
         parser = get_custom_parser(verbosity_config="count")
 
@@ -114,7 +110,6 @@ class TestArguments(TestCase):
         self.assertEqual(log_counts.get("critical", 0), 1)
 
     def test_bool_v(self: Self):
-
         # get parser with default values
         parser = get_custom_parser(verbosity_config="count")
 
@@ -137,7 +132,6 @@ class TestArguments(TestCase):
         self.assertEqual(log_counts.get("critical", 0), 1)
 
     def test_bool_vv(self: Self):
-
         # get parser with default values
         parser = get_custom_parser(verbosity_config="count")
 

@@ -1,10 +1,11 @@
 import logging
 import os
 import sys
-
 from typing import Optional, Union
-from rv_script_lib.lib_types import LogFormatChoice
+
 import structlog
+
+from rv_script_lib.lib_types import LogFormatChoice
 
 DEFAULT_LOG_FORMAT = "dev"
 
@@ -23,14 +24,12 @@ TIMESTAMPER_KWARGS = {
 
 
 def get_loglevel_formatter_by_name(format_name: str):
-
     return LOGLEVEL_FORMATTERS.get(
         format_name, LOGLEVEL_FORMATTERS.get(DEFAULT_LOG_FORMAT)
     )
 
 
 def get_loglevel_from_arg(loglevel_argument: Union[int, bool, None]) -> int:
-
     if loglevel_argument is None:
         return logging.INFO
 
@@ -60,7 +59,6 @@ def get_custom_logger(
     loglevel_argument: Union[int, bool] = logging.INFO,
     log_initialization: Optional[bool] = False,
 ) -> structlog.typing.WrappedLogger:
-
     log_level = get_loglevel_from_arg(loglevel_argument)
 
     if any(
@@ -69,7 +67,6 @@ def get_custom_logger(
             force_configure,
         ]
     ):
-
         configure_kwargs = TIMESTAMPER_KWARGS.get(
             log_format, TIMESTAMPER_KWARGS[DEFAULT_LOG_FORMAT]
         )
@@ -98,5 +95,4 @@ def get_custom_logger(
 
 
 def custom_logger_proxy() -> structlog.typing.WrappedLogger:
-
     return structlog.get_logger()

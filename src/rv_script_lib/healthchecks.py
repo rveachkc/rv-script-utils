@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Self
+from typing import Literal, Self
 from urllib.parse import urlunparse
 
 import requests
@@ -13,10 +13,9 @@ class HealthCheckPinger:
     def __init__(
         self: Self,
         uuid: str,
-        healthcheck_protocol: Optional[
-            Literal["http", "https"]
-        ] = HEALTHCHECK_DEFAULT_PROTOCOL,
-        healtheck_host: Optional[str] = "hc-ping.com",
+        healthcheck_protocol: Literal["http", "https"]
+        | None = HEALTHCHECK_DEFAULT_PROTOCOL,
+        healtheck_host: str | None = "hc-ping.com",
     ) -> Self:
         self.log = custom_logger_proxy()
         self.uuid = uuid
@@ -27,8 +26,8 @@ class HealthCheckPinger:
         self: Self,
         endpoint_path: str,
         endpoint_name: str,
-        params: Optional[dict] = None,
-        data: Optional[str] = None,
+        params: dict | None = None,
+        data: str | None = None,
     ) -> bool:
         if not self.uuid:
             self.log.debug("Healthcheck uuid not set, skipping")
@@ -71,28 +70,28 @@ class HealthCheckPinger:
     def __get_optional_params(**hc_kwargs) -> dict:
         return {key: value for key, value in hc_kwargs.items() if bool(value)}
 
-    def success(self: Self, rid: Optional[str] = ""):
+    def success(self: Self, rid: str | None = ""):
         self.__call_hc_api(
             endpoint_path=f"/{self.uuid}",
             endpoint_name="success",
             params=self.__get_optional_params(rid=rid),
         )
 
-    def start(self: Self, rid: Optional[str] = ""):
+    def start(self: Self, rid: str | None = ""):
         self.__call_hc_api(
             endpoint_path=f"/{self.uuid}/start",
             endpoint_name="start",
             params=self.__get_optional_params(rid=rid),
         )
 
-    def fail(self: Self, rid: Optional[str] = ""):
+    def fail(self: Self, rid: str | None = ""):
         self.__call_hc_api(
             endpoint_path=f"/{self.uuid}/fail",
             endpoint_name="fail",
             params=self.__get_optional_params(rid=rid),
         )
 
-    def log(self: Self, log_event: str, rid: Optional[str] = ""):
+    def log(self: Self, log_event: str, rid: str | None = ""):
         self.__call_hc_api(
             endpoint_path=f"/{self.uuid}/log",
             endpoint_name="log",
@@ -100,7 +99,7 @@ class HealthCheckPinger:
             data=log_event,
         )
 
-    def exit_status(self: Self, exit_status: int, rid: Optional[str] = ""):
+    def exit_status(self: Self, exit_status: int, rid: str | None = ""):
         if not isinstance(exit_status, int):
             self.log.error(
                 "Aborting", reason="exit status is not integer", exit_status=exit_status

@@ -36,9 +36,8 @@ class TestScriptBase(TestCase):
 
         job = ScriptBase()
 
-        with capture_logs() as cap_logs:
-            with self.assertRaises(NotImplementedError):
-                job.run()
+        with capture_logs() as cap_logs, self.assertRaises(NotImplementedError):
+            job.run()
 
         pprint.pprint(cap_logs)
 

@@ -1,7 +1,6 @@
 import logging
 import os
 import sys
-from typing import Optional, Union
 
 import structlog
 
@@ -29,7 +28,7 @@ def get_loglevel_formatter_by_name(format_name: str):
     )
 
 
-def get_loglevel_from_arg(loglevel_argument: Union[int, bool, None]) -> int:
+def get_loglevel_from_arg(loglevel_argument: int | bool | None) -> int:
     if loglevel_argument is None:
         return logging.INFO
 
@@ -48,16 +47,16 @@ def get_loglevel_from_arg(loglevel_argument: Union[int, bool, None]) -> int:
         return loglevel_argument
 
     return {
-        0: logging.WARN,
+        0: logging.WARNING,
         1: logging.INFO,
     }.get(loglevel_argument, logging.DEBUG)
 
 
 def get_custom_logger(
-    log_format: Optional[LogFormatChoice] = DEFAULT_LOG_FORMAT,
-    force_configure: Optional[bool] = False,
-    loglevel_argument: Union[int, bool] = logging.INFO,
-    log_initialization: Optional[bool] = False,
+    log_format: LogFormatChoice | None = DEFAULT_LOG_FORMAT,
+    force_configure: bool | None = False,
+    loglevel_argument: int | bool = logging.INFO,
+    log_initialization: bool | None = False,
 ) -> structlog.typing.WrappedLogger:
     log_level = get_loglevel_from_arg(loglevel_argument)
 

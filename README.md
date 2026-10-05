@@ -10,7 +10,6 @@ from rv_script_lib import ScriptBase
 
 
 class HelloWorld(ScriptBase):
-
     PARSER_ARGPARSE_KWARGS = {
         "description": "Hello World",
     }
@@ -41,7 +40,6 @@ class HelloWorld(ScriptBase):
 
 
 if __name__ == "__main__":
-
     myscript = HelloWorld()
     myscript.run()
 ```

@@ -18,14 +18,14 @@ class TestGetLoglevelFromArg(TestCase):
     def testLoggingInputs(self: Self):
         self.assertEqual(get_loglevel_from_arg(logging.DEBUG), logging.DEBUG)
         self.assertEqual(get_loglevel_from_arg(logging.INFO), logging.INFO)
-        self.assertEqual(get_loglevel_from_arg(logging.WARN), logging.WARN)
+        self.assertEqual(get_loglevel_from_arg(logging.WARNING), logging.WARNING)
         self.assertEqual(get_loglevel_from_arg(logging.ERROR), logging.ERROR)
         self.assertEqual(get_loglevel_from_arg(logging.CRITICAL), logging.CRITICAL)
 
     def testCountInputs(self: Self):
         self.assertEqual(get_loglevel_from_arg(2), logging.DEBUG)
         self.assertEqual(get_loglevel_from_arg(1), logging.INFO)
-        self.assertEqual(get_loglevel_from_arg(0), logging.WARN)
+        self.assertEqual(get_loglevel_from_arg(0), logging.WARNING)
 
     def testUnexpectedValues(self: Self):
         self.assertEqual(get_loglevel_from_arg(5), logging.DEBUG)

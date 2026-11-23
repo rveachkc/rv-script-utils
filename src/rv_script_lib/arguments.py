@@ -1,6 +1,5 @@
 import argparse
 import os
-from typing import Optional
 
 from rv_script_lib.healthchecks import (
     HEALTHCHECK_DEFAULT_HOSTNAME,
@@ -15,11 +14,11 @@ from rv_script_lib.logging import (
 
 
 def get_custom_parser(
-    verbosity_config: Optional[VerbosityConfigChoice] = "bool",
-    allow_format_choice: Optional[bool] = True,
-    argparse_kwargs: Optional[dict] = {},
-    include_healthchecks: Optional[bool] = True,
-    include_repeat_group: Optional[bool] = False,
+    verbosity_config: VerbosityConfigChoice | None = "bool",
+    allow_format_choice: bool | None = True,
+    argparse_kwargs: dict | None = {},
+    include_healthchecks: bool | None = True,
+    include_repeat_group: bool | None = False,
 ) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(**argparse_kwargs)
 
@@ -110,8 +109,8 @@ def get_custom_parser(
 
 def get_logger_from_args(
     args: argparse.Namespace,
-    log_initialization: Optional[bool] = False,
-    force_log_format: Optional[str] = "",
+    log_initialization: bool | None = False,
+    force_log_format: str | None = "",
 ):
     if force_log_format in LOGLEVEL_FORMATTERS.keys():
         use_log_format = force_log_format
